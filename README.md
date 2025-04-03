@@ -42,44 +42,44 @@ The CI/CD pipeline implements a sophisticated workflow architecture with distinc
 ## Project Structure
 
 ```
-u251cu2500u2500 .github/                          # GitHub-specific configuration
-u2502   u251cu2500u2500 workflows/                   # GitHub Actions workflow definitions
-u2502   u2502   u251cu2500u2500 ci.yml                   # Main CI workflow for testing and building
-u2502   u2502   u251cu2500u2500 cd-development.yml        # CD workflow for development environment
-u2502   u2502   u251cu2500u2500 cd-staging.yml            # CD workflow for staging environment
-u2502   u2502   u251cu2500u2500 cd-production.yml         # CD workflow for production environment
-u2502   u2502   u251cu2500u2500 security-scan.yml         # Security scanning workflow
-u2502   u2502   u2514u2500u2500 pr-validation.yml         # Pull request validation checks
-u2502   u251cu2500u2500 CODEOWNERS                   # Code ownership definitions
-u2502   u2514u2500u2500 pull_request_template.md     # PR template with checklist
-u251cu2500u2500 app/                             # Application source code
-u2502   u251cu2500u2500 src/                         # Application source files
-u2502   u251cu2500u2500 tests/                       # Test suite
-u2502   u2502   u251cu2500u2500 unit/                    # Unit tests
-u2502   u2502   u251cu2500u2500 integration/             # Integration tests
-u2502   u2502   u2514u2500u2500 e2e/                     # End-to-end tests
-u2502   u251cu2500u2500 Dockerfile                   # Multi-stage container build definition
-u2502   u251cu2500u2500 docker-compose.yml           # Local development environment
-u2502   u2514u2500u2500 package.json                 # Dependencies and scripts
-u251cu2500u2500 kubernetes/                       # Kubernetes manifests
-u2502   u251cu2500u2500 base/                        # Base Kustomize configuration
-u2502   u251cu2500u2500 overlays/                     # Environment-specific overlays
-u2502   u2502   u251cu2500u2500 development/             # Development environment config
-u2502   u2502   u251cu2500u2500 staging/                 # Staging environment config
-u2502   u2502   u2514u2500u2500 production/              # Production environment config
-u2502   u2514u2500u2500 helm/                        # Helm charts (alternative to Kustomize)
-u251cu2500u2500 scripts/                         # Utility scripts
-u2502   u251cu2500u2500 setup.sh                     # Environment setup script
-u2502   u251cu2500u2500 build.sh                     # Build automation script
-u2502   u2514u2500u2500 deploy.sh                    # Deployment automation script
-u251cu2500u2500 docs/                            # Documentation
-u2502   u251cu2500u2500 architecture.md              # Architecture documentation
-u2502   u251cu2500u2500 pipeline.md                  # Pipeline documentation
-u2502   u2514u2500u2500 runbooks/                    # Operational runbooks
-u2514u2500u2500 terraform/                       # Infrastructure as Code
-    u251cu2500u2500 modules/                      # Reusable Terraform modules
-    u251cu2500u2500 environments/                 # Environment-specific configurations
-    u2514u2500u2500 variables.tf                  # Input variables definition
+├── .github/                          # GitHub-specific configuration
+│   ├── workflows/                    # GitHub Actions workflow definitions
+│   │   ├── ci.yml                    # Main CI workflow for testing and building
+│   │   ├── cd-development.yml        # CD workflow for development environment
+│   │   ├── cd-staging.yml            # CD workflow for staging environment
+│   │   ├── cd-production.yml         # CD workflow for production environment
+│   │   ├── security-scan.yml         # Security scanning workflow
+│   │   └── pr-validation.yml         # Pull request validation checks
+│   ├── CODEOWNERS                    # Code ownership definitions
+│   └── pull_request_template.md      # PR template with checklist
+├── app/                              # Application source code
+│   ├── src/                          # Application source files
+│   ├── tests/                        # Test suite
+│   │   ├── unit/                     # Unit tests
+│   │   ├── integration/              # Integration tests
+│   │   └── e2e/                      # End-to-end tests
+│   ├── Dockerfile                    # Multi-stage container build definition
+│   ├── docker-compose.yml            # Local development environment
+│   └── package.json                  # Dependencies and scripts
+├── kubernetes/                       # Kubernetes manifests
+│   ├── base/                         # Base Kustomize configuration
+│   ├── overlays/                     # Environment-specific overlays
+│   │   ├── development/              # Development environment config
+│   │   ├── staging/                  # Staging environment config
+│   │   └── production/               # Production environment config
+│   └── helm/                         # Helm charts (alternative to Kustomize)
+├── scripts/                          # Utility scripts
+│   ├── setup.sh                      # Environment setup script
+│   ├── build.sh                      # Build automation script
+│   └── deploy.sh                     # Deployment automation script
+├── docs/                             # Documentation
+│   ├── architecture.md               # Architecture documentation
+│   ├── pipeline.md                   # Pipeline documentation
+│   └── runbooks/                     # Operational runbooks
+└── terraform/                        # Infrastructure as Code
+    ├── modules/                      # Reusable Terraform modules
+    ├── environments/                 # Environment-specific configurations
+    └── variables.tf                  # Input variables definition
 ```
 
 ## Getting Started
