@@ -1,0 +1,57 @@
+name: Deploy to Dev
+
+on:
+  repository_dispatch:
+    types: [deploy-dev]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: true
+        default: 'latest'
+
+jobs:
+  deploy:
+    name: Deploy to Dev Environment
+    runs-on: ubuntu-latest
+    environment: development
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: "4.5.4"
+      
+      - name: Set image tag
+        run: |
+          cd kubernetes/overlays/dev
+          kustomize edit set image ${{ secrets.DOCKER_USERNAME }}/microservice-app=${{ secrets.DOCKER_USERNAME }}/microservice-app:${{ github.event.client_payload.image_tag || github.event.inputs.image_tag }}
+      
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl config use-context dev-cluster
+          kustomize build kubernetes/overlays/dev | kubectl apply -f -
+          kubectl rollout status deployment/microservice-app -n microservices-dev --timeout=180s
+      
+      - name: Run smoke tests
+        run: |
+          ./scripts/smoke-test.sh dev
+      
+      - name: Notify Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: Dev Deployment
+          SLACK_MESSAGE: 'Deployed to DEV environment: ${{ secrets.DOCKER_USERNAME }}/microservice-app:${{ github.event.client_payload.image_tag || github.event.inputs.image_tag }}'
+          SLACK_FOOTER: 'GitHub Actions'

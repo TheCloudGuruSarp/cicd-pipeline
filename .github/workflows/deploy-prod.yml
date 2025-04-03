@@ -1,0 +1,69 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy to Production Environment
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: "4.5.4"
+      
+      - name: Set image tag
+        run: |
+          cd kubernetes/overlays/prod
+          kustomize edit set image ${{ secrets.DOCKER_USERNAME }}/microservice-app=${{ secrets.DOCKER_USERNAME }}/microservice-app:${{ github.event.inputs.image_tag }}
+      
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl config use-context prod-cluster
+          kustomize build kubernetes/overlays/prod | kubectl apply -f -
+          kubectl rollout status deployment/microservice-app -n microservices-prod --timeout=300s
+      
+      - name: Run smoke tests
+        run: |
+          ./scripts/smoke-test.sh prod
+      
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.image_tag }}
+          release_name: Release v${{ github.event.inputs.image_tag }}
+          body: |
+            Production release v${{ github.event.inputs.image_tag }}
+            
+            Deployed to production on $(date +'%Y-%m-%d %H:%M:%S')
+          draft: false
+          prerelease: false
+      
+      - name: Notify Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: Production Deployment
+          SLACK_MESSAGE: '🚀 Deployed to PRODUCTION environment: ${{ secrets.DOCKER_USERNAME }}/microservice-app:${{ github.event.inputs.image_tag }}'
+          SLACK_FOOTER: 'GitHub Actions'
