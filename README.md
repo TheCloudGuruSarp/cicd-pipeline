@@ -14,7 +14,7 @@ A comprehensive CI/CD pipeline using GitHub Actions for a containerized microser
 
 ## Pipeline Workflow
 
-![CI/CD Pipeline](./docs/pipeline-workflow.png)
+The pipeline workflow consists of several stages: code validation, building, testing, security scanning, and deployment across multiple environments (development, staging, and production).
 
 ## Project Structure
 
