@@ -2,6 +2,12 @@
 
 A comprehensive CI/CD pipeline using GitHub Actions for a containerized microservice application.
 
+## ✨ Developed by Sarper ✨
+
+---
+
+
+
 ## Features
 
 - Automated build, test, and deployment pipeline
