@@ -1,1 +1,1 @@
-✨ Developed by Sarper &amp; Mina ✨
+✨ Developed by Sarper ✨
