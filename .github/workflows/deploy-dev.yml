@@ -40,7 +40,7 @@ jobs:
         run: |
           kubectl config use-context dev-cluster
           kustomize build kubernetes/overlays/dev | kubectl apply -f -
-          kubectl rollout status deployment/microservice-app -n microservices-dev --timeout=180s
+          kubectl rollout status deployment/microservice-app -n ${{ secrets.KUBE_NAMESPACE || 'microservices-dev' }} --timeout=300s
       
       - name: Run smoke tests
         run: |
@@ -51,7 +51,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_CHANNEL: deployments
-          SLACK_COLOR: ${{ job.status }}
+          SLACK_COLOR: ${{ (job.status == 'success') && 'good' || 'danger' }}
           SLACK_TITLE: Dev Deployment
           SLACK_MESSAGE: 'Deployed to DEV environment: ${{ secrets.DOCKER_USERNAME }}/microservice-app:${{ github.event.client_payload.image_tag || github.event.inputs.image_tag }}'
           SLACK_FOOTER: 'GitHub Actions'
