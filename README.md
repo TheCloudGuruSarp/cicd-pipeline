@@ -1,1 +1,229 @@
-# CI/CD Pipeline with GitHub Actions\n\nA sophisticated continuous integration and continuous deployment pipeline implemented with GitHub Actions, designed for containerized microservice architectures with multi-environment deployment capabilities.\n\n## ✨ Developed by Sarper ✨\n\n---\n\n![DevOps Pipeline](https://img.shields.io/badge/DevOps-Pipeline-blue)\n![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-brightgreen)\n![Terraform](https://img.shields.io/badge/Infrastructure-Terraform-purple)\n![Monitoring](https://img.shields.io/badge/Monitoring-Prometheus-orange)\n\n## Features\n\n- Fully automated build, test, and deployment pipeline with comprehensive audit trails\n- Progressive delivery strategy across multiple environments (development, staging, production)\n- Optimized container image building with layer caching and multi-stage builds\n- Advanced security scanning for vulnerabilities in code, dependencies, and container images\n- Infrastructure as Code validation with policy enforcement and drift detection\n- Comprehensive test suite including unit, integration, and end-to-end tests\n- Automated quality gates with code coverage and static analysis metrics\n- GitOps-based deployment to Kubernetes clusters with canary and blue-green capabilities\n- Integrated observability with detailed pipeline metrics and performance analytics\n- Intelligent notification system with contextual alerts to Slack and email\n\n## Pipeline Workflow\n\nThe CI/CD pipeline implements a sophisticated workflow architecture with distinct stages and conditional execution paths:\n\n1. **Initialization**: Environment preparation, cache restoration, and dependency resolution\n2. **Code Quality**: Static analysis, linting, and code style enforcement\n3. **Security Scanning**: SAST, dependency vulnerability scanning, and license compliance checks\n4. **Build Process**: Compilation, artifact generation, and container image creation\n5. **Testing Suite**: Unit tests, integration tests, and code coverage analysis\n6. **Artifact Publication**: Version tagging, signing, and publishing to registries\n7. **Deployment Preparation**: Configuration validation and environment-specific customization\n8. **Progressive Deployment**: Controlled rollout across development, staging, and production\n9. **Verification**: Post-deployment testing and health checks\n10. **Observability**: Metrics collection, log aggregation, and performance analysis\n\n## Project Structure\n\n```\n├── .github/                          # GitHub-specific configuration\n│   ├── workflows/                    # GitHub Actions workflow definitions\n│   │   ├── ci.yml                    # Main CI workflow for testing and building\n│   │   ├── cd-development.yml        # CD workflow for development environment\n│   │   ├── cd-staging.yml            # CD workflow for staging environment\n│   │   ├── cd-production.yml         # CD workflow for production environment\n│   │   ├── security-scan.yml         # Security scanning workflow\n│   │   └── pr-validation.yml         # Pull request validation checks\n│   ├── CODEOWNERS                    # Code ownership definitions\n│   └── pull_request_template.md      # PR template with checklist\n├── app/                              # Application source code\n│   ├── src/                          # Application source files\n│   ├── tests/                        # Test suite\n│   │   ├── unit/                     # Unit tests\n│   │   ├── integration/              # Integration tests\n│   │   └── e2e/                      # End-to-end tests\n│   ├── Dockerfile                    # Multi-stage container build definition\n│   ├── docker-compose.yml            # Local development environment\n│   └── package.json                  # Dependencies and scripts\n├── kubernetes/                       # Kubernetes manifests\n│   ├── base/                         # Base Kustomize configuration\n│   ├── overlays/                     # Environment-specific overlays\n│   │   ├── development/              # Development environment config\n│   │   ├── staging/                  # Staging environment config\n│   │   └── production/               # Production environment config\n│   └── helm/                         # Helm charts (alternative to Kustomize)\n├── scripts/                          # Utility scripts\n│   ├── setup.sh                      # Environment setup script\n│   ├── build.sh                      # Build automation script\n│   └── deploy.sh                     # Deployment automation script\n├── docs/                             # Documentation\n│   ├── architecture.md               # Architecture documentation\n│   ├── pipeline.md                   # Pipeline documentation\n│   └── runbooks/                     # Operational runbooks\n└── terraform/                        # Infrastructure as Code\n    ├── modules/                      # Reusable Terraform modules\n    ├── environments/                 # Environment-specific configurations\n    └── variables.tf                  # Input variables definition\n```\n\n## Getting Started\n\n### Prerequisites\n\n- GitHub account with appropriate repository permissions\n- Docker Engine (20.10+) and Docker Compose (2.0+) for local development\n- Kubernetes cluster (v1.20+) with proper RBAC configuration for deployments\n- AWS account with programmatic access for infrastructure provisioning\n- Node.js (16.x+) and npm (8.x+) for application development\n- Terraform (1.0+) for infrastructure management\n- kubectl CLI configured to access your Kubernetes clusters\n\n### Initial Setup\n\n1. Fork this repository to your GitHub account or organization\n2. Clone the repository locally: `git clone https://github.com/yourusername/cicd-pipeline.git`\n3. Install dependencies: `cd cicd-pipeline && npm install`\n4. Configure the required GitHub repository secrets:\n\n   ```\n   # Authentication credentials\n   AWS_ACCESS_KEY_ID                 # AWS access key for infrastructure provisioning\n   AWS_SECRET_ACCESS_KEY             # AWS secret key for infrastructure provisioning\n   DOCKER_USERNAME                   # Docker Hub or container registry username\n   DOCKER_PASSWORD                   # Docker Hub or container registry password/token\n   \n   # Deployment configuration\n   KUBE_CONFIG_DATA                  # Base64-encoded kubeconfig file for Kubernetes access\n   KUBE_NAMESPACE                    # Target Kubernetes namespace for deployments\n   \n   # Notification and monitoring\n   SLACK_WEBHOOK_URL                 # Slack webhook for notifications\n   DATADOG_API_KEY                   # Datadog API key for metrics (optional)\n   \n   # Security scanning\n   SNYK_TOKEN                        # Snyk token for vulnerability scanning\n   SONAR_TOKEN                       # SonarCloud token for code quality analysis\n   ```\n\n5. Enable GitHub Actions in your repository settings\n6. Run the initial setup script: `./scripts/setup.sh`\n7. Verify the setup with a test pipeline run: `npm run ci:local`\n\n## Workflow Details\n\n### Pull Request Validation\n\nTriggered automatically on pull requests to the main branch:\n\n- **Code Quality Checks**:\n  - Linting with ESLint and Prettier\n  - Type checking with TypeScript\n  - Code style enforcement and formatting validation\n  - Code complexity analysis with SonarCloud\n\n- **Automated Testing**:\n  - Unit tests with Jest and code coverage reporting\n  - Integration tests with appropriate mocking\n  - Contract tests for API endpoints\n\n- **Security Analysis**:\n  - SAST (Static Application Security Testing) with CodeQL\n  - Dependency vulnerability scanning with Snyk and Dependabot\n  - License compliance verification\n  - Secret detection to prevent credential leakage\n\n- **Infrastructure Validation**:\n  - Terraform plan and validation\n  - Kubernetes manifest validation with kubeval\n  - Policy compliance checking with OPA/Conftest\n\n### Continuous Integration\n\nTriggered on merge to the main branch:\n\n- **Build Process**:\n  - Multi-stage Docker builds with layer optimization\n  - Artifact versioning with semantic versioning\n  - Parallel builds for multiple architectures (amd64/arm64)\n\n- **Comprehensive Testing**:\n  - Full test suite execution\n  - End-to-end tests in isolated environments\n  - Performance benchmarking for critical paths\n\n- **Security Scanning**:\n  - Container image scanning with Trivy\n  - SBOM (Software Bill of Materials) generation\n  - Compliance verification against security baselines\n\n- **Artifact Publication**:\n  - Container image signing and attestation\n  - Push to container registry with appropriate tags\n  - Artifact metadata recording for auditability\n\n### Continuous Deployment\n\nTriggered via manual approval or automatically after successful CI:\n\n- **Progressive Deployment Strategy**:\n  - Development environment: Automatic deployment after successful CI\n  - Staging environment: Scheduled or manual approval-based deployment\n  - Production environment: Manual approval with required reviewers\n\n- **Deployment Process**:\n  - Pre-deployment validation and health checks\n  - Canary or blue-green deployment patterns\n  - Kubernetes manifest application with Kustomize\n  - Database migrations with safety mechanisms\n\n- **Post-Deployment Verification**:\n  - Automated smoke tests against deployed services\n  - Synthetic transaction monitoring\n  - Performance and load testing in staging\n\n- **Observability Integration**:\n  - Deployment event markers in monitoring systems\n  - Automated log analysis for error patterns\n  - Notification dispatching with deployment details\n\n## Contributing\n\nWe welcome contributions to enhance this CI/CD pipeline solution. To contribute effectively:\n\n1. Review the [contribution guidelines](./CONTRIBUTING.md) before starting\n2. Fork the repository and create a feature branch from `main`\n3. Ensure your code follows the established coding standards\n4. Add or update tests to validate your changes\n5. Update documentation to reflect your modifications\n6. Submit a pull request with a clear description of the changes and benefits\n\nAll pull requests undergo automated validation through our CI pipeline before review.\n\n## Documentation\n\nComprehensive documentation is available in the `docs/` directory:\n\n- [Architecture Overview](./docs/architecture.md)\n- [Pipeline Configuration Guide](./docs/pipeline.md)\n- [Local Development Setup](./docs/development.md)\n- [Troubleshooting Guide](./docs/troubleshooting.md)\n\n## License\n\nThis project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+# CI/CD Pipeline with GitHub Actions
+
+A sophisticated continuous integration and continuous deployment pipeline implemented with GitHub Actions, designed for containerized microservice architectures with multi-environment deployment capabilities.
+
+## ✨ Developed by Sarper ✨
+
+---
+
+![DevOps Pipeline](https://img.shields.io/badge/DevOps-Pipeline-blue)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-brightgreen)
+![Terraform](https://img.shields.io/badge/Infrastructure-Terraform-purple)
+![Monitoring](https://img.shields.io/badge/Monitoring-Prometheus-orange)
+
+## Features
+
+- Fully automated build, test, and deployment pipeline with comprehensive audit trails
+- Progressive delivery strategy across multiple environments (development, staging, production)
+- Optimized container image building with layer caching and multi-stage builds
+- Advanced security scanning for vulnerabilities in code, dependencies, and container images
+- Infrastructure as Code validation with policy enforcement and drift detection
+- Comprehensive test suite including unit, integration, and end-to-end tests
+- Automated quality gates with code coverage and static analysis metrics
+- GitOps-based deployment to Kubernetes clusters with canary and blue-green capabilities
+- Integrated observability with detailed pipeline metrics and performance analytics
+- Intelligent notification system with contextual alerts to Slack and email
+
+## Pipeline Workflow
+
+The CI/CD pipeline implements a sophisticated workflow architecture with distinct stages and conditional execution paths:
+
+1. **Initialization**: Environment preparation, cache restoration, and dependency resolution
+2. **Code Quality**: Static analysis, linting, and code style enforcement
+3. **Security Scanning**: SAST, dependency vulnerability scanning, and license compliance checks
+4. **Build Process**: Compilation, artifact generation, and container image creation
+5. **Testing Suite**: Unit tests, integration tests, and code coverage analysis
+6. **Artifact Publication**: Version tagging, signing, and publishing to registries
+7. **Deployment Preparation**: Configuration validation and environment-specific customization
+8. **Progressive Deployment**: Controlled rollout across development, staging, and production
+9. **Verification**: Post-deployment testing and health checks
+10. **Observability**: Metrics collection, log aggregation, and performance analysis
+
+## Project Structure
+
+```
+├── .github/                          # GitHub-specific configuration
+│   ├── workflows/                    # GitHub Actions workflow definitions
+│   │   ├── ci.yml                    # Main CI workflow for testing and building
+│   │   ├── cd-development.yml        # CD workflow for development environment
+│   │   ├── cd-staging.yml            # CD workflow for staging environment
+│   │   ├── cd-production.yml         # CD workflow for production environment
+│   │   ├── security-scan.yml         # Security scanning workflow
+│   │   └── pr-validation.yml         # Pull request validation checks
+│   ├── CODEOWNERS                    # Code ownership definitions
+│   └── pull_request_template.md      # PR template with checklist
+├── app/                              # Application source code
+│   ├── src/                          # Application source files
+│   ├── tests/                        # Test suite
+│   │   ├── unit/                     # Unit tests
+│   │   ├── integration/              # Integration tests
+│   │   └── e2e/                      # End-to-end tests
+│   ├── Dockerfile                    # Multi-stage container build definition
+│   ├── docker-compose.yml            # Local development environment
+│   └── package.json                  # Dependencies and scripts
+├── kubernetes/                       # Kubernetes manifests
+│   ├── base/                         # Base Kustomize configuration
+│   ├── overlays/                     # Environment-specific overlays
+│   │   ├── development/              # Development environment config
+│   │   ├── staging/                  # Staging environment config
+│   │   └── production/               # Production environment config
+│   └── helm/                         # Helm charts (alternative to Kustomize)
+├── scripts/                          # Utility scripts
+│   ├── setup.sh                      # Environment setup script
+│   ├── build.sh                      # Build automation script
+│   └── deploy.sh                     # Deployment automation script
+├── docs/                             # Documentation
+│   ├── architecture.md               # Architecture documentation
+│   ├── pipeline.md                   # Pipeline documentation
+│   └── runbooks/                     # Operational runbooks
+└── terraform/                        # Infrastructure as Code
+    ├── modules/                      # Reusable Terraform modules
+    ├── environments/                 # Environment-specific configurations
+    └── variables.tf                  # Input variables definition
+```
+
+## Getting Started
+
+### Prerequisites
+
+- GitHub account with appropriate repository permissions
+- Docker Engine (20.10+) and Docker Compose (2.0+) for local development
+- Kubernetes cluster (v1.20+) with proper RBAC configuration for deployments
+- AWS account with programmatic access for infrastructure provisioning
+- Node.js (16.x+) and npm (8.x+) for application development
+- Terraform (1.0+) for infrastructure management
+- kubectl CLI configured to access your Kubernetes clusters
+
+### Initial Setup
+
+1. Fork this repository to your GitHub account or organization
+2. Clone the repository locally: `git clone https://github.com/yourusername/cicd-pipeline.git`
+3. Install dependencies: `cd cicd-pipeline && npm install`
+4. Configure the required GitHub repository secrets:
+
+   ```
+   # Authentication credentials
+   AWS_ACCESS_KEY_ID                 # AWS access key for infrastructure provisioning
+   AWS_SECRET_ACCESS_KEY             # AWS secret key for infrastructure provisioning
+   DOCKER_USERNAME                   # Docker Hub or container registry username
+   DOCKER_PASSWORD                   # Docker Hub or container registry password/token
+
+   # Deployment configuration
+   KUBE_CONFIG_DATA                  # Base64-encoded kubeconfig file for Kubernetes access
+   KUBE_NAMESPACE                    # Target Kubernetes namespace for deployments
+
+   # Notification and monitoring
+   SLACK_WEBHOOK_URL                 # Slack webhook for notifications
+   DATADOG_API_KEY                   # Datadog API key for metrics (optional)
+
+   # Security scanning
+   SNYK_TOKEN                        # Snyk token for vulnerability scanning
+   SONAR_TOKEN                       # SonarCloud token for code quality analysis
+   ```
+
+5. Enable GitHub Actions in your repository settings
+6. Run the initial setup script: `./scripts/setup.sh`
+7. Verify the setup with a test pipeline run: `npm run ci:local`
+
+## Workflow Details
+
+### Pull Request Validation
+
+Triggered automatically on pull requests to the main branch:
+
+- **Code Quality Checks**:
+  - Linting with ESLint and Prettier
+  - Type checking with TypeScript
+  - Code style enforcement and formatting validation
+  - Code complexity analysis with SonarCloud
+
+- **Automated Testing**:
+  - Unit tests with Jest and code coverage reporting
+  - Integration tests with appropriate mocking
+  - Contract tests for API endpoints
+
+- **Security Analysis**:
+  - SAST (Static Application Security Testing) with CodeQL
+  - Dependency vulnerability scanning with Snyk and Dependabot
+  - License compliance verification
+  - Secret detection to prevent credential leakage
+
+- **Infrastructure Validation**:
+  - Terraform plan and validation
+  - Kubernetes manifest validation with kubeval
+  - Policy compliance checking with OPA/Conftest
+
+### Continuous Integration
+
+Triggered on merge to the main branch:
+
+- **Build Process**:
+  - Multi-stage Docker builds with layer optimization
+  - Artifact versioning with semantic versioning
+  - Parallel builds for multiple architectures (amd64/arm64)
+
+- **Comprehensive Testing**:
+  - Full test suite execution
+  - End-to-end tests in isolated environments
+  - Performance benchmarking for critical paths
+
+- **Security Scanning**:
+  - Container image scanning with Trivy
+  - SBOM (Software Bill of Materials) generation
+  - Compliance verification against security baselines
+
+- **Artifact Publication**:
+  - Container image signing and attestation
+  - Push to container registry with appropriate tags
+  - Artifact metadata recording for auditability
+
+### Continuous Deployment
+
+Triggered via manual approval or automatically after successful CI:
+
+- **Progressive Deployment Strategy**:
+  - Development environment: Automatic deployment after successful CI
+  - Staging environment: Scheduled or manual approval-based deployment
+  - Production environment: Manual approval with required reviewers
+
+- **Deployment Process**:
+  - Pre-deployment validation and health checks
+  - Canary or blue-green deployment patterns
+  - Kubernetes manifest application with Kustomize
+  - Database migrations with safety mechanisms
+
+- **Post-Deployment Verification**:
+  - Automated smoke tests against deployed services
+  - Synthetic transaction monitoring
+  - Performance and load testing in staging
+
+- **Observability Integration**:
+  - Deployment event markers in monitoring systems
+  - Automated log analysis for error patterns
+  - Notification dispatching with deployment details
+
+## Contributing
+
+We welcome contributions to enhance this CI/CD pipeline solution. To contribute effectively:
+
+1. Review the [contribution guidelines](./CONTRIBUTING.md) before starting
+2. Fork the repository and create a feature branch from `main`
+3. Ensure your code follows the established coding standards
+4. Add or update tests to validate your changes
+5. Update documentation to reflect your modifications
+6. Submit a pull request with a clear description of the changes and benefits
+
+All pull requests undergo automated validation through our CI pipeline before review.
+
+## Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- [Architecture Overview](./docs/architecture.md)
+- [Pipeline Configuration Guide](./docs/pipeline.md)
+- [Local Development Setup](./docs/development.md)
+- [Troubleshooting Guide](./docs/troubleshooting.md)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
