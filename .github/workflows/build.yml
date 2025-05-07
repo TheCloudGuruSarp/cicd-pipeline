@@ -33,13 +33,13 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=sha,format=short
-            type=ref,event=branch
       
-      - name: Build and export
+      - name: Build, export, and push
         uses: docker/build-push-action@v4
         with:
           context: ./app
           load: true
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -54,17 +54,7 @@ jobs:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'table'
           exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-      
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: ./app
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          severity: 'HIGH,CRITICAL'
       
       - name: Set outputs
         id: vars
@@ -75,7 +65,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_CHANNEL: ci-cd
-          SLACK_COLOR: ${{ job.status }}
+          SLACK_COLOR: ${{ (job.status == 'success') && 'good' || 'danger' }}
           SLACK_TITLE: Build and Test
           SLACK_MESSAGE: 'Build completed for ${{ github.repository }} @ ${{ steps.vars.outputs.sha_short }}'
           SLACK_FOOTER: 'GitHub Actions'
